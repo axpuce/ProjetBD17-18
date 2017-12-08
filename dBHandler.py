@@ -17,7 +17,4 @@ class dBHandler :
 		self.cursor.execute("""DELETE FROM funcDep WHERE nameTable=? AND lhs=? AND rhs=?""",remove)
 		self.conn.commit()
 
-	def select(self,name):
-		self.cursor.execute("SELECT nameTable,lhs,rhs from funcDep WHERE nameTable=?""",name)
-		self.conn.commit()
-	
+
