@@ -12,7 +12,7 @@ class dBHandler(cmd.Cmd) :
 		'Attempt to connect to the specified database'
 		self.conn=sqlite3.connect(arg)
 		self.cursor=self.conn.cursor()
-		self.cursor.execute("CREATE TABLE IF NOT EXISTS funcDep(nameTable TEXT NOT NULL,lhs TEXT NOT NULL,rhs TEXT NOT NULL, PRIMARY KEY(nameTable,lhs,rhs))")
+		self.cursor.execute('CREATE TABLE IF NOT EXISTS funcDep(nameTable TEXT NOT NULL,lhs TEXT NOT NULL,rhs TEXT NOT NULL, PRIMARY KEY(nameTable,lhs,rhs))')
 		self.conn.commit() 
 
 	def do_insert(self,arg):
@@ -26,11 +26,12 @@ class dBHandler(cmd.Cmd) :
 
 	def do_display(self,arg):
 		'Display the funcDep table of the database actually connected'
-		for row in self.cursor.execute("SELECT * FROM funcDep ORDER BY nameTable"):
+		for row in self.cursor.execute("SELECT * from funcDep ORDER BY nameTable"):
 			print(row)
-	def do_getLHS(self,arg):
-		print(self.cursor.execute("SELECT lhs FROM funcDep WHERE nameTable = ?",arg))		
 
+def parse(arg):
+    'Convert a series of zero or more numbers to an argument tuple'
+    return tuple(map(int, arg.split()))
 
 if __name__ == '__main__':
 	dBHandler().cmdloop()
