@@ -2,12 +2,12 @@ import sqlite3, cmd, sys
 class dBHandler(cmd.Cmd) :
 	intro = "Welcome to the database handler. type help or ? to list commands\nYou should connect to a database using \"connect\" to start"
 	prompt = '(dbhandler)'
-	database = ''
 	def __init__(self):
 		cmd.Cmd.__init__(self)
 		self.cursor = None
 		self.conn = None
 		self.connected = False
+		self.databaseName = ""
 
 	def do_connect(self,arg):
 		'Attempt to connect to the specified database'
@@ -16,9 +16,19 @@ class dBHandler(cmd.Cmd) :
 		self.cursor.execute('CREATE TABLE IF NOT EXISTS funcDep(nameTable TEXT NOT NULL,lhs TEXT NOT NULL,rhs TEXT NOT NULL, PRIMARY KEY(nameTable,lhs,rhs))')
 		self.conn.commit()
 		self.connected = True
+		self.databaseName = arg
 		print("Succesfully connected to database: " + arg + "!")
 
-
+	def do_disconnect(self,arg):
+		'Disconnect from the actually connected database'
+		self.conn = None
+		self.cursor = None
+		self.connected = False
+		self.databaseName = ""
+	def do_status(self,arg):
+		if not self.isConnected():
+			return
+		print("Connected to database : "+ self.databaseName)
 	def do_insert(self,arg):
 		'Insert a new functional dependency'
 		if not self.isConnected():
