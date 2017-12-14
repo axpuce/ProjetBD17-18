@@ -41,8 +41,11 @@ class dBHandler(cmd.Cmd) :
 		if not self.isConnected():
 			return
 		res = parse(arg)
-		self.cursor.execute("INSERT INTO funcDep(nameTable,lhs,rhs) VALUES(?,?,?)",(res[0],res[1],res[2]))
-		self.conn.commit()
+		if " " in res[2] :
+			print ("error Fd not singulary")
+		else:
+			self.cursor.execute("INSERT INTO funcDep(nameTable,lhs,rhs) VALUES(?,?,?)",(res[0],resomm[1],res[2]))
+			self.conn.commit()
 
 	def do_execute(self,arg):
 		if not self.isConnected():
@@ -72,10 +75,20 @@ class dBHandler(cmd.Cmd) :
 			return
 		res=parse(arg)
 		collumn=res[1]
-		
+		(x,y,z)=self.index[int(res[0])]
 		if collumn=="l":
-			self.cursor.execute("UPDATE funcDep SET lhs=? WHERE nameTable=? AND lhs=? AND rhs=?",(res[2],self	
-		self.cursor.execute(
+			self.cursor.execute("UPDATE funcDep SET lhs=? WHERE nameTable=? AND lhs=? AND rhs=?",(res[2],x,y,z))
+			self.conn.commit()	
+		elif collumn=="r":
+			if " " in res[2] :
+				print ("error Fd not singulary")
+			else :
+				self.cursor.execute("UPDATE funcDep SET rhs=? WHERE nameTable=? AND lhs=? AND rhs=?",(res[2],x,y,z))
+				self.conn.commit()
+		else:
+			print("Error")	
+		
+		
 		
 
 
@@ -90,26 +103,30 @@ class dBHandler(cmd.Cmd) :
 			self.index.append(row)
 			i+=1
 
-	def do_getLHS(self,arg):
+
+
+
+
+
+
+	def getLHS(self,table):
 		'Print LHS from the table given'
 		if not self.isConnected():
 			return
 		self.cursor.execute("SELECT lhs FROM funcDep WHERE nameTable =?",parse(arg))
 		res = self.cursor.fetchall()
-		print(res)
+		for row in res:
+			
+			print(str(row)[1:-2])
 
-	def do_getRHS(self,arg):
+	def getRHS(self,table):
 		'Print RHS from the table given'
 		if not self.isConnected():
 			return
 		self.cursor.execute("SELECT rhs FROM funcDep WHERE nameTable =?",parse(arg))
 		res = self.cursor.fetchall()
-		print(res)
-
-
-
-
-
+		for row in res:
+			print(str(row)[1:-2])
 
 
 	def isConnected(self):
@@ -117,6 +134,19 @@ class dBHandler(cmd.Cmd) :
 			print("You are currently not connected to a database")
 			return False
 		return True
+
+	def getName(self,table):
+		res=self.cursor.execute("select * from "+table)
+		return list(map(lambda x:x[0] ,self.cursor.description))
+		
+
+	def isIn(self,table,att):
+		name=self.getName(table)
+		for n in name:
+			if n==att:
+				return True
+		return False
+		
 
 def parse(arg):
     'Convert a series of zero or more numbers to an argument tuple'
