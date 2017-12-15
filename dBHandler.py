@@ -44,7 +44,7 @@ class dBHandler(cmd.Cmd) :
 		if " " in res[2] :
 			print ("error Fd not singulary")
 		else:
-			self.cursor.execute("INSERT INTO funcDep(nameTable,lhs,rhs) VALUES(?,?,?)",(res[0],resomm[1],res[2]))
+			self.cursor.execute("INSERT INTO funcDep(nameTable,lhs,rhs) VALUES(?,?,?)",(res[0],res[1],res[2]))
 			self.conn.commit()
 
 	def do_execute(self,arg):
@@ -113,20 +113,25 @@ class dBHandler(cmd.Cmd) :
 		'Print LHS from the table given'
 		if not self.isConnected():
 			return
-		self.cursor.execute("SELECT lhs FROM funcDep WHERE nameTable =?",parse(arg))
+		self.cursor.execute("SELECT lhs FROM funcDep WHERE nameTable =?",table)
 		res = self.cursor.fetchall()
+		l=[]
+		i=0
 		for row in res:
-			
-			print(str(row)[1:-2])
+			l[i]=str(row)[1:-2]
+		return l
 
 	def getRHS(self,table):
 		'Print RHS from the table given'
 		if not self.isConnected():
 			return
-		self.cursor.execute("SELECT rhs FROM funcDep WHERE nameTable =?",parse(arg))
+		self.cursor.execute("SELECT rhs FROM funcDep WHERE nameTable =?",table)
 		res = self.cursor.fetchall()
+		r=[]
+		i=0
 		for row in res:
-			print(str(row)[1:-2])
+			r[i]=str(row)[1:-2]
+		return r
 
 
 	def isConnected(self):
