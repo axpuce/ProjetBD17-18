@@ -1,5 +1,4 @@
 import sqlite3, cmd, sys
-from itertools import chain, combinations
 
 class dBHandler(cmd.Cmd) :
     intro = "Welcome to the database handler. type help or ? to list commands\nYou should connect to a database using \"connect\" to start"
