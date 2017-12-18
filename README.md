@@ -1,2 +1,3 @@
 # ProjetBD17-18
-Ceci est un fichier Readme.me
+Deghorain Axelle et Sahli Yacine
+Projet réalisé en python
